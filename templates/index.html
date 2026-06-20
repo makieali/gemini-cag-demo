@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gemini CAG Demo &mdash; Cache-Augmented Generation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="logo">⚡</span>
+        <div>
+          <h1>Gemini CAG</h1>
+          <p class="tagline">Cache-Augmented Generation</p>
+        </div>
+      </div>
+
+      <section class="card">
+        <h2>Knowledge base</h2>
+        <label class="dropzone" id="dropzone">
+          <input type="file" id="file-input" multiple hidden />
+          <span class="dz-icon">⬆</span>
+          <span class="dz-text">Drop files or click to select</span>
+          <span class="dz-hint">PDF, TXT, MD, DOCX, CSV, XLSX, PPTX, JSON</span>
+        </label>
+        <ul class="filelist" id="staged-files"></ul>
+        <button class="btn primary" id="build-btn" disabled>Build context cache</button>
+
+        <div class="kb-status hidden" id="kb-status">
+          <div class="kb-row">
+            <span class="dot live"></span>
+            <span id="kb-summary">Cache active</span>
+          </div>
+          <div class="kb-meta">
+            <span id="kb-tokens">0 tokens cached</span>
+            <span class="ttl" id="kb-ttl">--:--</span>
+          </div>
+          <div class="kb-actions">
+            <button class="btn ghost sm" id="extend-btn">Extend TTL</button>
+            <button class="btn ghost sm danger" id="clear-btn">Delete</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card savings" id="savings">
+        <h2>Cumulative savings</h2>
+        <div class="savings-hero">
+          <span class="savings-amount" id="savings-amount">$0.000000</span>
+          <span class="savings-pct" id="savings-pct">0% saved vs no-cache</span>
+        </div>
+        <div class="savings-grid">
+          <div><span class="k">Queries</span><span class="v" id="stat-queries">0</span></div>
+          <div><span class="k">Cached tokens</span><span class="v" id="stat-cached">0</span></div>
+          <div><span class="k">Spent</span><span class="v" id="stat-spent">$0.00</span></div>
+          <div><span class="k">No-cache cost</span><span class="v" id="stat-nocache">$0.00</span></div>
+        </div>
+      </section>
+
+      <footer class="sidebar-foot">
+        <span id="model-badge">{{ model }}</span>
+        <a href="https://ai.google.dev/gemini-api/docs/caching" target="_blank" rel="noopener">What is CAG?</a>
+      </footer>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <div class="topbar">
+        <label class="toggle">
+          <input type="checkbox" id="compare-toggle" />
+          <span>Compare mode (CAG vs full-context)</span>
+        </label>
+      </div>
+
+      <div class="messages" id="messages">
+        <div class="msg system">
+          <p><strong>Welcome.</strong> Upload documents to build a Gemini context cache, then ask questions.
+          Every answer reuses the cache, so repeated queries are billed at a ~90% discount on the cached tokens.</p>
+          <p>Flip on <em>Compare mode</em> to run each question both ways and see the cost &amp; latency difference live.</p>
+        </div>
+      </div>
+
+      <form class="composer" id="composer">
+        <input type="text" id="question" placeholder="Ask about your documents&hellip;" autocomplete="off" disabled />
+        <button class="btn primary" id="send-btn" type="submit" disabled>Ask</button>
+      </form>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

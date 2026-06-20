@@ -1,0 +1,13 @@
+services:
+  cag-demo:
+    build: .
+    ports:
+      - "5069:5069"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
+      - CACHE_TTL_SECONDS=${CACHE_TTL_SECONDS:-3600}
+      - SECRET_KEY=${SECRET_KEY:-change-me}
+      - FLASK_DEBUG=false
+    env_file:
+      - .env
